@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trivia de Piel - JaneZerm</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        /* Importar fuentes de Google Fonts para un diseño atractivo */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
+
+        /* Definición de variables CSS para los colores pastel más coloridos y alegres */
+        :root {
+            --color-primary: #FF69B4; /* Rosa vibrante (Hot Pink) - para elementos principales y botones */
+            --color-secondary: #B0E0E6; /* Azul Polvo (Powder Blue) - para fondos de secciones */
+            --color-tertiary: #98FB98; /* Verde Pálido (PaleGreen) - para acentos y hover */
+            --color-background: #F0F8FF; /* Azul Alicia (AliceBlue) - fondo general muy claro */
+            --color-text: #4A4A4A; /* Gris oscuro suave para el texto, para contraste */
+            --color-selected: #FF1493; /* Rosa más intenso (Deep Pink) - para la opción seleccionada */
+            --color-button-hover: #FF8FAB; /* Rosa más suave para hover de botones principales */
+            --color-prev-button: #E0FFFF; /* Cian Claro (LightCyan) - para el botón "Anterior" */
+            --color-border-light: #C0C0C0; /* Gris plata para bordes suaves */
+        }
+
+        /* Estilos generales del cuerpo */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, var(--color-background) 0%, #E6E6FA 100%); /* Degradado suave para el fondo */
+            color: var(--color-text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Contenedor principal de la aplicación */
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 20px; /* Bordes más redondeados */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); /* Sombra más pronunciada y suave */
+            width: 90%;
+            max-width: 800px;
+            margin-bottom: 30px; /* Más espacio entre secciones */
+            text-align: center;
+            /* Animación de entrada */
+            animation: fadeInDown 1s ease-out;
+        }
+
+        /* Sección del encabezado */
+        header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Contenedor del logotipo y eslogan */
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px; /* Más espacio */
+        }
+
+        /* Estilo del logotipo */
+        .logo {
+            width: 120px; /* Tamaño ligeramente más grande */
+            height: auto;
+            border-radius: 50%; /* Hacer el logo circular si es posible */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Sombra para el logo */
+            /* Animación del logotipo */
+            animation: bounceIn 1s ease-out;
+        }
+
+        /* Estilo del eslogan */
+        .slogan-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8em; /* Tamaño del eslogan más grande */
+            color: var(--color-primary);
+            margin-top: 15px; /* Más espacio */
+            font-weight: 700; /* Más énfasis */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* Sombra de texto sutil */
+            /* Animación del texto del eslogan */
+            animation: lightSpeedInRight 1s ease-out;
+        }
+
+        /* Título principal de la aplicación */
+        h1 {
+            color: var(--color-primary);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+            font-size: 2.5em; /* Título más grande */
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.08); /* Sombra para el título */
+        }
+
+        /* Contenedor de cada pregunta */
+        .question-container {
+            margin-bottom: 30px;
+            background-color: var(--color-secondary);
+            padding: 30px; /* Más padding */
+            border-radius: 15px; /* Más redondeado */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Sombra más suave */
+            border: 1px solid var(--color-border-light); /* Borde sutil */
+        }
+
+        /* Texto de la pregunta */
+        .question-text {
+            font-size: 1.5em; /* Texto de pregunta más grande */
+            margin-bottom: 25px;
+            color: var(--color-text);
+            font-weight: 700;
+        }
+
+        /* Contenedor de las opciones de respuesta */
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 18px; /* Más espacio entre opciones */
+        }
+
+        /* Botones de opción de respuesta */
+        .option-button {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            border: 2px solid var(--color-primary); /* Borde más pronunciado con color primario */
+            padding: 18px 28px; /* Más padding */
+            border-radius: 10px; /* Más redondeado */
+            font-size: 1.2em; /* Texto de opción más grande */
+            cursor: pointer;
+            transition: all 0.3s ease; /* Transición más suave para todos los cambios */
+            text-align: left;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Sombra sutil */
+        }
+
+        /* Efecto hover para los botones de opción */
+        .option-button:hover {
+            background-color: var(--color-tertiary);
+            color: #fff;
+            transform: translateY(-5px) scale(1.02); /* Efecto más pronunciado */
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Sombra al hacer hover */
+        }
+
+        /* Estilo para la opción seleccionada */
+        .option-button.selected {
+            background-color: var(--color-selected);
+            color: #fff;
+            border-color: var(--color-selected);
+            animation: pulse 0.5s ease-out; /* Pequeña animación al seleccionar */
+            transform: scale(1.01); /* Ligeramente más grande al seleccionar */
+        }
+
+        /* Contenedor de botones de navegación */
+        .navigation-buttons {
+            margin-top: 40px; /* Más espacio */
+            display: flex;
+            justify-content: space-between;
+            gap: 25px; /* Más espacio entre botones */
+        }
+
+        /* Botones de navegación (Siguiente y Ver Resultados) */
+        .nav-button {
+            background-color: var(--color-primary);
+            color: #fff;
+            border: none;
+            padding: 15px 30px; /* Más padding */
+            border-radius: 10px; /* Más redondeado */
+            font-size: 1.2em; /* Texto de botón más grande */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); /* Sombra para botones */
+        }
+
+        /* Estilo específico para el botón "Anterior" */
+        #prev-btn {
+            background-color: var(--color-prev-button); /* Cian Claro */
+            color: var(--color-text); /* Asegura que el texto sea legible */
+            border: 2px solid var(--color-primary); /* Borde sutil con color primario */
+        }
+
+        /* Efecto hover para los botones de navegación */
+        .nav-button:hover {
+            background-color: var(--color-button-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15); /* Sombra al hacer hover */
+        }
+
+        /* Estilo para botones deshabilitados */
+        .nav-button:disabled {
+            background-color: #E0E0E0; /* Gris claro para deshabilitado */
+            cursor: not-allowed;
+            border-color: #D0D0D0; /* Borde más claro para deshabilitado */
+            color: #A0A0A0; /* Texto más claro */
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Contenedor de resultados (inicialmente oculto) */
+        #results-container {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            border-radius: 20px;
+            background-color: var(--color-secondary);
+            /* Animación de entrada para los resultados */
+            animation: zoomIn 1s ease-out;
+            margin-top: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Título de resultados */
+        #results-container h2 {
+            color: var(--color-primary);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 25px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Párrafos dentro del contenedor de resultados */
+        #results-container p {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+        }
+
+        /* Subtítulo de recomendaciones de productos */
+        #results-container h3 {
+            color: var(--color-tertiary);
+            font-family: 'Playfair Display', serif;
+            margin-top: 30px;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Estilo para las secciones de recomendación de productos */
+        .product-recommendation {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            text-align: left;
+            border: 1px solid var(--color-border-light);
+        }
+
+        /* Título de cada marca de producto */
+        .product-recommendation h4 {
+            color: var(--color-primary);
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+
+        /* Listas de productos recomendados */
+        .product-recommendation ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .product-recommendation ul li {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+            line-height: 1.4;
+        }
+
+        /* Estilos para las galerías de productos */
+        .gallery-section {
+            margin-top: 50px;
+            padding: 30px;
+            background-color: var(--color-secondary);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .gallery-section h3 {
+            color: var(--color-primary);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 30px;
+            font-size: 2em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); /* Columnas más flexibles */
+            gap: 25px; /* Más espacio */
+            justify-content: center;
+        }
+
+        .product-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--color-primary); /* Borde rosa delgado */
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-card img {
+            max-width: 100%;
+            height: 130px; /* Altura ligeramente mayor */
+            object-fit: contain;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .product-card p {
+            font-size: 1.05em;
+            font-weight: 600;
+            color: var(--color-text);
+            margin: 0;
+        }
+
+        /* Estilos para la sección de unirse al negocio */
+        .join-business-section {
+            margin-top: 40px;
+            padding: 25px;
+            background-color: var(--color-background); /* Fondo más claro para esta sub-sección */
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--color-border-light);
+        }
+
+        .join-business-section h3 {
+            color: var(--color-primary);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .join-business-section p {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        /* Asegura que el enlace de WhatsApp en esta sección también luzca como un botón */
+        .join-business-section a.nav-button {
+            display: inline-block;
+            margin-top: 20px;
+            background-color: var(--color-primary);
+            color: #fff;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1.1em;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .join-business-section a.nav-button:hover {
+            background-color: var(--color-button-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Pie de página */
+        footer {
+            margin-top: 50px;
+            padding: 25px;
+            text-align: center;
+            width: 100%;
+            background-color: var(--color-primary);
+            color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 -8px 20px rgba(0, 0, 0, 0.15);
+            /* Animación de entrada del pie de página */
+            animation: fadeInUp 1s ease-out;
+        }
+
+        /* Párrafos en el pie de página */
+        footer p {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+
+        /* Enlaces en el pie de página */
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        /* Efecto hover para enlaces en el pie de página */
+        footer a:hover {
+            color: var(--color-secondary);
+        }
+
+        /* Diseño Responsivo para diferentes tamaños de pantalla */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+                width: 95%;
+            }
+
+            .slogan-text {
+                font-size: 1.4em;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .question-text {
+                font-size: 1.3em;
+            }
+
+            .option-button {
+                font-size: 1.1em;
+                padding: 15px 20px;
+            }
+
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav-button {
+                width: 100%;
+                font-size: 1em;
+                padding: 12px 25px;
+            }
+
+            #results-container h2 {
+                font-size: 2em;
+            }
+
+            #results-container p {
+                font-size: 1.2em;
+            }
+
+            #results-container h3 {
+                font-size: 1.6em;
+            }
+
+            .gallery-section h3 {
+                font-size: 1.8em;
+            }
+            .join-business-section h3 {
+                font-size: 1.5em;
+            }
+            .join-business-section p {
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+                gap: 15px;
+            }
+            .product-card img {
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+
+            .slogan-text {
+                font-size: 1.1em;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .question-text {
+                font-size: 1.1em;
+            }
+
+            .option-button {
+                font-size: 1em;
+                padding: 12px 15px;
+            }
+
+            footer {
+                padding: 15px;
+            }
+
+            footer p {
+                font-size: 0.95em;
+            }
+            .logo {
+                width: 90px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container animate__animated animate__fadeInDown">
+        <header>
+            <div class="logo-container">
+                <img src="https://raw.githubusercontent.com/MARTHA091/PAGINA-JANE/main/foto.PNG" alt="Logotipo JaneZerm" class="logo animate__animated animate__bounceIn">
+                <div class="slogan-text animate__animated animate__lightSpeedInRight">Los recuerdos en el alma NO en la piel</div>
+            </div>
+            <h1>Descubre Tu Tipo de Piel</h1>
+            <p>¡Responde estas preguntas para conocer mejor tu piel y recibir recomendaciones personalizadas!</p>
+        </header>
+
+        <div id="quiz-container">
+            </div>
+
+        <div class="navigation-buttons">
+            <button id="prev-btn" class="nav-button animate__animated animate__pulse" disabled>Anterior</button>
+            <button id="next-btn" class="nav-button animate__animated animate__pulse">Siguiente</button>
+            <button id="submit-btn" class="nav-button animate__animated animate__pulse" style="display:none;">Ver Resultados</button>
+        </div>
+    </div>
+
+    <div id="results-container" class="container">
+        <h2>¡Tus Resultados!</h2>
+        <p>Basado en tus respuestas, tu tipo de piel es:</p>
+        <p id="skin-type-result" class="animate__animated animate__bounceIn"></p>
+        <p id="feedback-text" class="animate__animated animate__fadeInUp"></p>
+
+        <h3>Productos Recomendados:</h3>
+        <div id="product-recommendation-nu-skin" class="product-recommendation animate__animated animate__fadeInLeft">
+            <h4>Nu Skin</h4>
+            <ul id="nu-skin-products"></ul>
+        </div>
+        <div id="product-recommendation-farmasi" class="product-recommendation animate__animated animate__fadeInRight">
+            <h4>Farmasi</h4>
+            <ul id="farmasi-products"></ul>
+        </div>
+    </div>
+
+    <section id="about-me" class="container animate__animated animate__fadeInUp">
+        <h2>Sobre Mí</h2>
+        <p>Hola soy Janely, mamá, esposa, emprendedora y apasionada por el bienestar, el skin care y el poder de una sonrisa auténtica. Mi misión es ayudarte a descubrir lo mejor de ti misma a través del cuidado de tu piel, con productos que realmente funcionan y una comunidad que abraza la autenticidad. He probado y recomendado los productos que hoy ves en esta página porque creo en ellos, los uso, y sé que pueden transformar no solo tu piel, sino también tu confianza. Glow by Janely nació del deseo de crear un espacio real, natural y con magia...donde cada persona encuentre lo que necesita para brillar a su manera. Aquí no vas a encontrar productos: vas a encontrar guía, inspiración y una mano amiga.</p>
+
+        <div class="join-business-section">
+            <h3>Únete a mi Equipo</h3>
+            <p>¿Quieres formar parte de esta comunidad y emprender en el mundo del bienestar y la belleza? ¡Hablemos!</p>
+            <p>WhatsApp: <a href="https://wa.me/525579040986" target="_blank" class="animate__animated animate__pulse nav-button">+52 5579040986</a></p>
+        </div>
+    </section>
+
+    <section id="product-galleries" class="container animate__animated animate__fadeInUp">
+        <h2>Nuestros Productos Favoritos</h2>
+
+        <div class="gallery-section">
+            <h3>Productos Nu Skin</h3>
+            <div class="product-grid" id="nu-skin-gallery">
+                </div>
+        </div>
+
+        <div class="gallery-section">
+            <h3>Productos Farmasi</h3>
+            <div class="product-grid" id="farmasi-gallery">
+                </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>¿Necesitas ayuda o quieres más información?</p>
+        <p>WhatsApp: <a href="https://wa.me/525579040986" target="_blank" class="animate__animated animate__pulse">+52 5579040986</a></p>
+        <p>Sígueme en Instagram: <a href="https://www.instagram.com/jan_zermeno?igsh=ZjQ1NXI0aGoxOGxl&utm_source=qr" target="_blank" class="animate__animated animate__pulse">@jan_zermeno</a></p>
+        <p>Tienda Nu Skin: <a href="https://nskn.co/pekAl8" target="_blank" class="animate__animated animate__pulse">Comprar Nu Skin</a></p>
+        <p>Tienda Farmasi: <a href="https://mx.farmasi.com/janelyzermeno" target="_blank" class="animate__animated animate__pulse">Comprar Farmasi</a></p>
+        <p>&copy; 2024 JaneZerm. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        // Definición de las preguntas de la trivia
+        const questions = [
+            {
+                question: "¿Con qué frecuencia sientes la piel tirante o con picazón, especialmente después de lavarte la cara?",
+                options: [
+                    { text: "Casi siempre", type: "seca", score: 3 },
+                    { text: "Frecuentemente", type: "seca", score: 2 },
+                    { text: "A veces", type: "normal", score: 1 },
+                    { text: "Nunca", type: "grasa", score: 0 }
+                ]
+            },
+            {
+                question: "¿Cómo describirías la apariencia de tus poros?",
+                options: [
+                    { text: "Pequeños y apenas visibles", type: "normal", score: 0 },
+                    { text: "Visibles, especialmente en la zona T", type: "mixta", score: 1 },
+                    { text: "Grandes y dilatados en casi toda la cara", type: "grasa", score: 2 },
+                    { text: "Prácticamente invisibles", type: "seca", score: 0 }
+                ]
+            },
+            {
+                question: "¿Cómo se siente tu piel al final del día, sin haber usado maquillaje?",
+                options: [
+                    { text: "Brillante y aceitosa en toda la cara", type: "grasa", score: 3 },
+                    { text: "Brillante solo en la zona T (frente, nariz, barbilla)", type: "mixta", score: 2 },
+                    { text: "Fresca y sin brillo excesivo", type: "normal", score: 0 },
+                    { text: "Un poco seca y áspera", type: "seca", score: 1 }
+                ]
+            },
+            {
+                question: "¿Con qué frecuencia experimentas brotes de acné o espinillas?",
+                options: [
+                    { text: "Constantemente", type: "grasa", score: 3 },
+                    { text: "Ocasionalmente, especialmente en la zona T", type: "mixta", score: 2 },
+                    { text: "Raramente", type: "normal", score: 0 },
+                    { text: "Nunca", type: "seca", score: 0 }
+                ]
+            },
+            {
+                question: "¿Cómo reacciona tu piel a los cambios de clima (frío, viento)?",
+                options: [
+                    { text: "Se enrojece, se irrita y se vuelve muy seca", type: "sensible", score: 3 },
+                    { text: "Se seca un poco, pero no se irrita", type: "seca", score: 2 },
+                    { text: "No hay cambios significativos", type: "normal", score: 0 },
+                    { text: "Se vuelve un poco más aceitosa", type: "grasa", score: 1 }
+                ]
+            },
+            {
+                question: "¿Notas alguna descamación o piel muerta, especialmente en las mejillas o alrededor de la boca?",
+                options: [
+                    { text: "Sí, a menudo", type: "seca", score: 3 },
+                    { text: "A veces, en invierno", type: "seca", score: 2 },
+                    { text: "Raramente", type: "normal", score: 0 },
+                    { text: "Nunca", type: "grasa", score: 0 }
+                ]
+            },
+            {
+                question: "¿Con qué frecuencia necesitas aplicar crema hidratante en tu rostro?",
+                options: [
+                    { text: "Varias veces al día", type: "seca", score: 3 },
+                    { text: "Una o dos veces al día", type: "normal", score: 1 },
+                    { text: "Solo en ciertas áreas (zona T)", type: "mixta", score: 0 },
+                    { text: "Casi nunca, mi piel se siente hidratada", type: "grasa", score: 0 }
+                ]
+            },
+            {
+                question: "¿Tu piel tiende a ser sensible a ciertos productos o ingredientes?",
+                options: [
+                    { text: "Sí, a menudo se irrita o enrojece", type: "sensible", score: 3 },
+                    { text: "A veces, con productos fuertes", type: "sensible", score: 2 },
+                    { text: "Raramente, tolero la mayoría de los productos", type: "normal", score: 0 },
+                    { text: "Nunca, mi piel es muy resistente", type: "grasa", score: 0 }
+                ]
+            },
+            {
+                question: "¿Cómo se siente tu piel al tacto en la zona de las mejillas?",
+                options: [
+                    { text: "Suave y elástica", type: "normal", score: 0 },
+                    { text: "Tirante y áspera", type: "seca", score: 2 },
+                    { text: "Un poco aceitosa", type: "grasa", score: 1 },
+                    { text: "A veces tirante, a veces normal", type: "mixta", score: 0 }
+                ]
+            },
+            {
+                question: "¿Tienes brillo excesivo en tu zona T (frente, nariz, barbilla) pero las mejillas se sienten normales o secas?",
+                options: [
+                    { text: "Sí, siempre", type: "mixta", score: 3 },
+                    { text: "A veces", type: "mixta", score: 2 },
+                    { text: "No, mi piel es consistente en toda la cara", type: "normal", score: 0 },
+                    { text: "No, mi piel es aceitosa en toda la cara", type: "grasa", score: 1 }
+                ]
+            }
+        ];
+
+        // Variables de estado del quiz
+        let currentQuestionIndex = 0; // Índice de la pregunta actual
+        let userAnswers = new Array(questions.length).fill(null); // Almacena las respuestas del usuario
+        let skinTypeScores = { // Puntajes para cada tipo de piel
+            normal: 0,
+            seca: 0,
+            grasa: 0,
+            mixta: 0,
+            sensible: 0
+        };
+
+        // Referencias a elementos del DOM
+        const quizContainer = document.getElementById('quiz-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results-container');
+        const skinTypeResult = document.getElementById('skin-type-result');
+        const feedbackText = document.getElementById('feedback-text');
+        const nuSkinProductsList = document.getElementById('nu-skin-products');
+        const farmasiProductsList = document.getElementById('farmasi-products');
+
+        // Datos para las galerías de productos
+        const nuSkinProducts = [
+            { name: "Colágeno", img: "https://github.com/MARTHA091/JANEZERM/blob/main/colageno.png?raw=true" },
+            { name: "Boost", img: "https://github.com/MARTHA091/JANEZERM/blob/main/boost.png?raw=true" },
+            { name: "LumiSpa", img: "https://github.com/MARTHA091/27demayo/blob/main/lumispa.png?raw=true" },
+            { name: "Tru Face Essence Ultra", img: "https://github.com/MARTHA091/27demayo/blob/main/tru%20face.png?raw=true" },
+            { name: "Optimum Omega", img: "https://github.com/MARTHA091/27demayo/blob/main/omega.png?raw=true" },
+            { name: "True Face Peptide", img: "https://github.com/MARTHA091/JANEZERM/blob/main/retinol.png?raw=true" },
+            { name: "Kit ageLOC WellSpa iO Essentials Belleza", img: "https://github.com/MARTHA091/27demayo/blob/main/well%20Spa.jpg?raw=true" } // URL actualizada para WellSpa
+        ];
+
+        const farmasiProducts = [
+            { name: "Cosméticos (varios)", img: "https://placehold.co/150x120/98FB98/FFFFFF?text=Cosmeticos" },
+            { name: "Kit de Caléndula Dr. C. Tuna", img: "https://placehold.co/150x120/98FB98/FFFFFF?text=Calendula" }
+        ];
+
+        /**
+         * Carga la pregunta actual en la interfaz.
+         */
+        function loadQuestion() {
+            const questionData = questions[currentQuestionIndex];
+            quizContainer.innerHTML = `
+                <div class="question-container animate__animated animate__fadeIn">
+                    <p class="question-text">${currentQuestionIndex + 1}. ${questionData.question}</p>
+                    <div class="options-container">
+                        ${questionData.options.map((option, index) => `
+                            <button class="option-button" data-index="${index}">${option.text}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Añadir event listeners a los botones de opción
+            document.querySelectorAll('.option-button').forEach(button => {
+                button.addEventListener('click', selectAnswer);
+                // Si la pregunta ya fue respondida, marcar la opción seleccionada
+                if (userAnswers[currentQuestionIndex] !== null && userAnswers[currentQuestionIndex].selectedOptionIndex == button.dataset.index) {
+                    button.classList.add('selected');
+                }
+            });
+
+            updateNavigationButtons(); // Actualizar el estado de los botones de navegación
+        }
+
+        /**
+         * Maneja la selección de una respuesta por parte del usuario.
+         * @param {Event} event - El evento de clic.
+         */
+        function selectAnswer(event) {
+            const selectedButton = event.target;
+            const optionIndex = parseInt(selectedButton.dataset.index);
+
+            // Remover la clase 'selected' de todos los botones de opción antes de añadirla al nuevo
+            document.querySelectorAll('.option-button').forEach(button => {
+                button.classList.remove('selected');
+            });
+
+            // Marcar la respuesta seleccionada
+            selectedButton.classList.add('selected');
+
+            // Guardar la respuesta del usuario
+            userAnswers[currentQuestionIndex] = {
+                questionIndex: currentQuestionIndex,
+                selectedOptionIndex: optionIndex
+            };
+
+            updateNavigationButtons(); // Actualizar el estado de los botones de navegación
+        }
+
+        /**
+         * Actualiza el estado de los botones de navegación (Anterior, Siguiente, Ver Resultados).
+         */
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0; // Deshabilitar 'Anterior' en la primera pregunta
+            nextBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'none' : 'block'; // Ocultar 'Siguiente' en la última
+            submitBtn.style.display = currentQuestionIndex === questions.length - 1 ? 'block' : 'none'; // Mostrar 'Ver Resultados' en la última
+
+            // Habilitar 'Siguiente' o 'Ver Resultados' solo si la pregunta actual ha sido respondida
+            if (userAnswers[currentQuestionIndex] === null) {
+                nextBtn.disabled = true;
+                submitBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
+                submitBtn.disabled = false;
+            }
+        }
+
+        /**
+         * Avanza a la siguiente pregunta.
+         */
+        function goToNextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            }
+        }
+
+        /**
+         * Retrocede a la pregunta anterior.
+         */
+        function goToPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                loadQuestion();
+            }
+        }
+
+        /**
+         * Procesa las respuestas del quiz para determinar el tipo de piel.
+         */
+        function submitQuiz() {
+            // Reiniciar puntajes de tipo de piel
+            skinTypeScores = { normal: 0, seca: 0, grasa: 0, mixta: 0, sensible: 0 };
+
+            // Calcular puntajes basados en las respuestas del usuario
+            userAnswers.forEach(answer => {
+                if (answer !== null) {
+                    const question = questions[answer.questionIndex];
+                    const selectedOption = question.options[answer.selectedOptionIndex];
+
+                    // Sumar el puntaje de la opción seleccionada al tipo de piel correspondiente
+                    skinTypeScores[selectedOption.type] += selectedOption.score !== undefined ? selectedOption.score : 1;
+                }
+            });
+
+            // Determinar el tipo de piel dominante
+            let maxScore = -1;
+            let dominantSkinType = "Normal"; // Tipo de piel por defecto
+
+            // Orden de prioridad para tipos de piel en caso de empate o bajo puntaje general
+            // (sensible > seca > grasa > mixta > normal)
+            const orderedSkinTypes = ["sensible", "seca", "grasa", "mixta", "normal"];
+
+            for (const type of orderedSkinTypes) {
+                if (skinTypeScores[type] > maxScore) {
+                    maxScore = skinTypeScores[type];
+                    dominantSkinType = type.charAt(0).toUpperCase() + type.slice(1); // Capitalizar la primera letra
+                } else if (skinTypeScores[type] === maxScore && dominantSkinType !== "Normal") {
+                    // Si hay empate, mantener el que tiene más "problemas" (mayor prioridad en orderedSkinTypes)
+                    if (orderedSkinTypes.indexOf(type) < orderedSkinTypes.indexOf(dominantSkinType.toLowerCase())) {
+                        dominantSkinType = type.charAt(0).toUpperCase() + type.slice(1);
+                    }
+                }
+            }
+
+            // Si el puntaje total es muy bajo, se asume piel normal (ajustar umbral si es necesario)
+            const totalScore = Object.values(skinTypeScores).reduce((sum, score) => sum + score, 0);
+            if (totalScore < 5 && dominantSkinType !== "Sensible") {
+                 dominantSkinType = "Normal";
+            }
+
+            // Mostrar los resultados y recomendaciones en la interfaz
+            displayResults(dominantSkinType);
+            quizContainer.parentNode.style.display = 'none'; // Ocultar el contenedor del quiz
+            resultsContainer.style.display = 'block'; // Mostrar el contenedor de resultados
+
+            // Aplicar animaciones a los elementos de resultado
+            skinTypeResult.classList.add('animate__bounceIn');
+            feedbackText.classList.add('animate__fadeInUp');
+        }
+
+        /**
+         * Muestra el tipo de piel determinado y las recomendaciones de productos.
+         * @param {string} skinType - El tipo de piel determinado.
+         */
+        function displayResults(skinType) {
+            skinTypeResult.textContent = skinType; // Mostrar el tipo de piel
+            let feedback = "";
+            let nuSkinRecs = [];
+            let farmasiRecs = [];
+
+            // Lógica para determinar el feedback y las recomendaciones según el tipo de piel
+            switch (skinType.toLowerCase()) {
+                case "normal":
+                    feedback = "¡Felicidades! Tu piel es equilibrada, lo que significa que tiene una buena hidratación, poros poco visibles y rara vez presenta problemas de acné o sequedad. Mantén esta salud con una rutina de cuidado básica pero constante.";
+                    nuSkinRecs = [
+                        "**LumiSpa iO** para una limpieza y tratamiento profundo.",
+                        "**NaPCA Moisture Mist** para hidratación instantánea.",
+                        "**ageLOC Radiant Day SPF 22** para hidratación y protección diaria."
+                    ];
+                    farmasiRecs = [
+                        "**Aqua Therapy Moisturizing Cream** para hidratación ligera.",
+                        "**Dr. C. Tuna Tea Tree Facial Wash** para limpieza suave.",
+                        "**Dr. C. Tuna Calendula Oil Cream** para mantener la elasticidad."
+                    ];
+                    break;
+                case "seca":
+                    feedback = "Tu piel tiende a sentirse tirante, áspera y puede presentar descamación. Necesita una hidratación profunda y constante para restaurar su barrera protectora y prevenir la pérdida de agua.";
+                    nuSkinRecs = [
+                        "**Tru Face Essence Ultra** para firmeza e hidratación intensa.",
+                        "**NaPCA Moisture Mist** y **Moisture Restore Intense Moisturizer** para hidratación profunda.",
+                        "**ageLOC LumiSpa Activating Cleanser - Normal/Dry**."
+                    ];
+                    farmasiRecs = [
+                        "**Dr. C. Tuna Calendula Oil Cream** para nutrir y suavizar.",
+                        "**Dr. C. Tuna Resurface Cream (Línea Reishi)** para piel muy seca.",
+                        "**Aqua Therapy Moisturizing Cream** para un extra de hidratación."
+                    ];
+                    break;
+                case "grasa":
+                    feedback = "Tu piel se caracteriza por el exceso de brillo, poros dilatados y una mayor propensión a brotes de acné. Necesita productos que controlen la producción de sebo sin resecarla, y que mantengan los poros limpios.";
+                    nuSkinRecs = [
+                        "**ageLOC LumiSpa Activating Cleanser - Oily** para una limpieza profunda y control de sebo.",
+                        "**Epoch Glacial Marine Mud** para desintoxicar y purificar.",
+                        "**Clear Action® Toner** para reducir el brillo."
+                    ];
+                    farmasiRecs = [
+                        "**Dr. C. Tuna Tea Tree Face Cream** para controlar el brillo.",
+                        "**Dr. C. Tuna Activated Charcoal Black Mask** para purificar poros.",
+                        "**Dr. C. Tuna AcniSeries Face Wash** para limpieza profunda."
+                    ];
+                    break;
+                case "mixta":
+                    feedback = "Tu piel combina zonas grasas (usualmente la zona T: frente, nariz, barbilla) con zonas normales o secas (mejillas). Necesitas productos que equilibren ambas necesidades, controlando el brillo sin resecar otras áreas.";
+                    nuSkinRecs = [
+                        "**ageLOC LumiSpa Activating Cleanser - Normal/Combination**.",
+                        "**NaPCA Moisture Mist** para hidratación general.",
+                        "**ageLOC Radiant Day SPF 22**."
+                    ];
+                    farmasiRecs = [
+                        "**Dr. C. Tuna Aqua Therapy Moisturizing Cream** para un equilibrio.",
+                        "**Dr. C. Tuna Tea Tree Face Cream** (aplicar solo en zona T si es necesario).",
+                        "**Dr. C. Tuna Calendula Oil Cream** (aplicar en zonas secas)."
+                    ];
+                    break;
+                case "sensible":
+                    feedback = "Tu piel es propensa a enrojecimiento, irritación y reacciones a productos. Necesita un cuidado suave, con ingredientes calmantes y libres de irritantes. La clave es la paciencia y la simplicidad en tu rutina.";
+                    nuSkinRecs = [
+                        "**ageLOC LumiSpa Activating Cleanser - Sensitive** para una limpieza suave.",
+                        "**Calm & Comfort** (línea de Epoch para piel sensible).",
+                        "**Tru Face line corrector** para líneas finas y suavidad general."
+                    ];
+                    farmasiRecs = [
+                        "**Dr. C. Tuna Calendula Oil Cream** para calmar y nutrir.",
+                        "**Dr. C. Tuna Tea Tree Soothing & Purifying Toner** (para pieles sensibles que toleren el té de árbol).",
+                        "**Dr. C. Tuna Revitalizing Anti-Aging Cream (con Caléndula)**."
+                    ];
+                    break;
+                default:
+                    feedback = "No pudimos determinar tu tipo de piel con exactitud. Por favor, intenta de nuevo o consulta a un especialista.";
+                    break;
+            }
+
+            feedbackText.textContent = feedback; // Mostrar el feedback
+
+            // Llenar las listas de productos recomendados
+            nuSkinProductsList.innerHTML = nuSkinRecs.map(rec => `<li>${rec}</li>`).join('');
+            farmasiProductsList.innerHTML = farmasiRecs.map(rec => `<li>${rec}</li>`).join('');
+        }
+
+        /**
+         * Carga las galerías de productos en la interfaz.
+         */
+        function loadGalleries() {
+            const nuSkinGallery = document.getElementById('nu-skin-gallery');
+            nuSkinProducts.forEach(product => {
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+                card.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}" onerror="console.error('Error al cargar la imagen: ${product.name}', this.src); this.src='https://placehold.co/150x120/CCCCCC/666666?text=Imagen+no+disponible';">
+                    <p>${product.name}</p>
+                `;
+                nuSkinGallery.appendChild(card);
+            });
+
+            const farmasiGallery = document.getElementById('farmasi-gallery');
+            farmasiProducts.forEach(product => {
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+                card.innerHTML = `
+                    <img src="${product.img}" alt="${product.name}" onerror="console.error('Error al cargar la imagen: ${product.name}', this.src); this.src='https://placehold.co/150x120/CCCCCC/666666?text=Imagen+no+disponible';">
+                    <p>${product.name}</p>
+                `;
+                farmasiGallery.appendChild(card);
+            });
+        }
+
+        // Inicializar el quiz y las galerías al cargar la página
+        loadQuestion();
+        loadGalleries(); // Cargar las galerías al inicio
+
+        // Asignar event listeners a los botones de navegación
+        prevBtn.addEventListener('click', goToPreviousQuestion);
+        nextBtn.addEventListener('click', goToNextQuestion);
+        submitBtn.addEventListener('click', submitQuiz);
+    </script>
+</body>
+</html>
